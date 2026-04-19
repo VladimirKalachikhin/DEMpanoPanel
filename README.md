@@ -22,6 +22,9 @@ This code is written without using AI, "best practices", OOP, and an IDE.
 A modern browser is required on a high-performance device with sufficient RAM and a wide screen.  
 Firefox is preferred. Chrome is not recommended, and Edge is not supported.
 
+## Demo
+[Sukko, Black sea, Russia](https://vladimirkalachikhin.github.io/DEMpanoPanel/)
+
 ## Installation
 ### Dependencies
 The [maplibre](https://maplibre.org/) library is used. Due to the library's rapid variability, an instance of it is included in the project files, so no dependencies need to be installed. It is also not recommended to update the library.  
