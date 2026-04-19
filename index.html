@@ -1,0 +1,475 @@
+<!DOCTYPE html >
+<html>
+<head>
+	<link href="common.css" rel="stylesheet" type="text/css">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta http-equiv="Content-Script-Type" content="text/javascript">
+	<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+
+	<link rel='stylesheet' href='maplibre-gl/dist/maplibre-gl_src.css' />
+	<!--<link rel='stylesheet' href='http://stagerserver.local/map/maplibre-gl/dist/maplibre-gl.css' />-->
+	<script src='maplibre-gl/dist/maplibre-gl_src.js'></script>
+	<!--<script src='http://stagerserver.local/map/maplibre-gl/dist/maplibre-gl.js'></script>-->
+
+	<script src="coordinate-parserPATCHED/coordinates.js">	</script>
+	<script src="coordinate-parserPATCHED/validator.js"></script>
+	<script src="coordinate-parserPATCHED/coordinate-number.js"></script> 
+
+	<script src="fCommon.js"></script>
+	<script src="options.js"></script>
+	<title>DEMpanoPanel</title>
+</head>
+<body>
+<div id="container">
+	<div id="map"></div>
+	<div id="overlayPanel">
+		<table id="controlPad">
+		<colgroup>
+			<col style="width:10%;">
+			<col>
+			<col style="width:10%;">
+		</colgroup>
+		<tr style="height:10%;">
+			<td id="viewpointUPcontrol" style="text-align:left;"><button style="width:2.5em;" onClick="viewpointUP();"><img src="img/plus.svg" style="vertical-align:middle;height:1.7em;"></button></td>
+			<td id="stepUPcontrol" style="text-align:center;"><button style="width:7em;" onClick="stepUP();"><img src="img/triangle-up.svg" style="vertical-align:top;height:1.7em;"></button></td>
+			<td></tg>
+		</tr><tr>
+			<td id="leftControl" style="text-align:left;"><button style="height:5em;" onClick="panoLEFT();"><img src="img/triangle-left.svg" style="vertical-align:middle;width:1.7em;"></button></td>
+			<td id="centerControl" style="padding:0.5em;border:solid black 1px;border-radius: 0.5em;background-color:white;">
+				<div style="margin:0;padding:0;width:80%;">
+					<button onClick="updField();" style="width:2em;height:1em;margin:0;float:right;padding:0;"><img src="img/no.svg" title="" alt="" style="width:0.7em;transform: translate(0, -0.6em);"></button>
+					<button onClick="updField('°');" style="width:2em;height:1em;margin:0 0.7em 0 0;padding:0;"><span style="font-weight: bold; font-size:150%;">°</span></button>
+					<button onClick="updField('′');" style="width:2em;height:1em;margin:0 0.7em 0 0;padding:0;"><span style="font-weight: bold; font-size:150%;">′</span></button>
+					<button onClick='updField(`"`);' style="width:2em;height:1em;margin:0 0em 0 0;padding:0;"><span style="font-weight: bold; font-size:150%;">″</span></button>
+				</div>
+				<span id="viewPointInputTXT"></span><br>
+				<button id='goToPositionButton' onClick='viewPointsHandler();' class='okButton' style="float:right;margin:1em auto;"><img src="img/ok.svg" title="" alt="" style="width:1em;height:3em;"></button>
+				<input id='viewPointInput' type="text" title="" size='12' style='width:80%;font-size:130%;margin-bottom:0.2em;'><br>	
+				<span id="targetPointInputTXT"></span><br>
+				<input id='targetPointInput' type="text" title="" size='12' style='width:80%;font-size:130%;'>			
+			</td>
+			<td id="rightControl" style="text-align:right;"><button style="height:5em;" onClick="panoRIGHT();"><img src="img/triangle-right.svg" style="vertical-align:middle;width:1.7em;"></button></td>
+		</tr><tr style="height:10%;">
+			<td id="viewpointDOWNcontrol" style="text-align:left;"><button style="width:2.5em;" onClick="viewpointDOWN();"><img src="img/minus.svg" style="vertical-align:middle;height:1.7em;"></button></td>
+			<td id="stepBACKcontrol" style="text-align:center;"><button style="width:7em;" onClick="stepBACK();"><img src="img/triangle-down.svg" style="vertical-align:bottom;height:1.7em;"></button></td>
+			<td></td>
+		</tr>
+		</table>
+		<div id="directionRose">
+			<div id="compassCard">
+				<div id="compass-face">
+					<div class="charN"><div class="compas-face-scale">0</div>N<br>|</div>
+					<div class="charNNE"><div class="compas-face-scale">22.5</div>NNE<br>|</div>
+					<div class="charNE"><div class="compas-face-scale">45</div>NE<br>|</div>
+					<div class="charENE"><div class="compas-face-scale">67.5</div>ENE<br>|</div>
+					<div class="charE"><div class="compas-face-scale">90</div>E<br>|</div>
+					<div class="charESE"><div class="compas-face-scale">112.5</div>ESE<br>|</div>
+					<div class="charSE"><div class="compas-face-scale">135</div>SE<br>|</div>
+					<div class="charSSE"><div class="compas-face-scale">157.5</div>SSE<br>|</div>
+					<div class="charS"><div class="compas-face-scale">180</div>S<br>|</div>
+					<div class="charSSW"><div class="compas-face-scale">202.5</div>SSW<br>|</div>
+					<div class="charSW"><div class="compas-face-scale">225</div>SW<br>|</div>
+					<div class="charWSW"><div class="compas-face-scale">247.5</div>WSW<br>|</div>
+					<div class="charW"><div class="compas-face-scale">270</div>W<br>|</div>
+					<div class="charWNW"><div class="compas-face-scale">292.5</div>WNW<br>|</div>
+					<div class="charNW"><div class="compas-face-scale">315</div>NW<br>|</div>
+					<div class="charNNW"><div class="compas-face-scale">337.5</div>NNW<br>|</div>
+				</div>
+				<div id="viewAngleMark">
+					<img src="img/angle37.svg" title="" alt="">
+				</div>
+				<img id="bearingMark" src="img/boat.svg" title="" alt="">
+			</div>
+		</div>
+		<div id="backControlPad">
+			<div style="margin: 0 1em;padding:1em 0;"> <!-- Следовать текущим координатам -->
+				<div class="onoffswitch" style="float:right;margin:0 0 0 1em;"> <!--  Переключатель https://proto.io/freebies/onoff/  -->
+					<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="followSwitch" onChange="followSwitchHandler();" >
+					<label class="onoffswitch-label" for="followSwitch">
+						<span class="onoffswitch-inner"></span>
+						<span class="onoffswitch-switch"></span>
+					</label>
+				</div>
+				<span id="followSwitchTXT"></span>
+			</div>
+		</div>
+		<div style="width:fit-content;position:absolute;top:0;right:0;margin: 0.5em;">
+			<span id="readyIndicator" title="" style="color:gray;">&#x2B24; </span>
+		</div>
+	</div>
+</div>
+<script>"use strict"
+var i18nLocal;
+</script>
+<script src="internationalisation/en.js"></script><!-- обязательно в начале, для инициализации переменных -->
+
+<script>"use strict"
+var i18n = i18nLocal;	// объект со строками подписей i18nLocal обязательно есть в en.js
+i18fieldsUpdate();	// покажем все подписи на английском
+internalisationApply();	// заменим (некоторые) подписи на национальные
+</script>
+
+<script>"use strict"
+/* Указанные параметры просмотра хранятся в options, сохраняются в хранилище браузера и
+не меняются.
+Параметры текущего просмотра хранятся в cameraOptions.
+*/
+/* Параметры и переменные
+Последовательно расположенные скрипты будут выполнятся последовательно
+*/
+var version = ' v.0.0.0';
+/*
+0.0.0	base features
+*/
+document.title += version;
+var options = storageHandler.restore('options');
+if(!options) options = {};
+if(!options.fromLatLng) options.fromLatLng = defaultOptions.defaultViewPoint;
+if(!options.fromLatLng) options.fromLatLng = [44.7837, 37.3775];	// Lat Lng, {"lat": ,"lng": }, etc.
+if(!options.toLatLng && !options.bearing) options.toLatLng = defaultOptions.defaultTargetPoint;
+if(!options.toLatLng && !options.bearing) options.toLatLng = [44.7927, 37.404];	// Lat Lng, {"lat": ,"lng": }, etc.
+if(!options.bearing) options.bearing = bearingFromTo(options.fromLatLng,options.toLatLng);
+if(!options.bearing) options.bearing = bearingFromTo(options.fromLatLng,options.toLatLng);
+if(!options.kioskMode) options.kioskMode = defaultOptions.kioskMode;
+//console.log('options:',options);
+
+// Расстояние между камерой и center карты. null - пытаемся определить по рельефу.
+// Если константа - то при попадании center на рельеф выше точки камеры - изображение будет
+// построено так, что точка камеры окажется поднятой до точки рельефа. Т.е., вид с воды на горы
+// будет не с воды.
+// Кажется, что динамически - лучше.
+// Технический параметр для управления видом панорамы.
+var fakeDistance = null;	
+var cameraOptions = {};
+{
+const p = point2maplibre(options.fromLatLng);	// это возвращает массив из двух чисел, вне зависимости от формата options.fromLatLng
+cameraOptions.cameraCenter = {"lng":p[0],"lat":p[1]};
+cameraOptions.elevation = options.cameraHeight;
+cameraOptions.pitch = 89.7;
+cameraOptions.bearing = options.bearing;
+cameraOptions.userDirection = 0;	// это, конечно, курсовой угол взгляда, но в их примитивном языке нет понятия "курсовой угол"
+};
+
+if(options.kioskMode) overlayPanel.hidden = true;
+
+var gpsdPROXYbackend = false;	// флаг, что у нас именно gpsdPROXY, а не gpsd2websocket
+var socket;
+var optionsUpdateProcess = null;	// id процесса периодического обновления options
+var spatialInfoPresent = false;	// флаг, что вот прям сейчас у нас есть текущее положение от какого-то сервера
+const hRotateDelta = 15;	// единичный угол поворота панорамы по горизонтали
+const vRotateDelta = 3;	// единичный угол поворота панорамы по вертикали
+const distanceDelta = 100;	// м, шаг панорамирования
+var currentInputField;	// текущее поле ввода, объект DOM
+viewPointInput.addEventListener('focus',()=>{currentInputField = viewPointInput;});
+targetPointInput.addEventListener('focus',()=>{currentInputField = targetPointInput;});
+
+const mainStyle = {
+"version": 8,
+"sources": {
+	"skin": {
+		"type": "raster",
+		"tiles": [defaultOptions.DEMtexture],
+		"tileSize": 256,
+		"maxzoom": 22
+	},
+	"terrainSource": {
+		"type": "raster-dem",
+		"url": defaultOptions.DEMsource,
+	},
+	"hillshadeSource": {
+		"type": "raster-dem",
+		"url": defaultOptions.DEMsource,
+	},
+},
+"layers": [
+	{
+		"id": "skin",
+		"type": "raster",
+		"source": "skin"
+	},
+	{	
+		"id": "hills",
+		"type": "hillshade",
+		"source": "hillshadeSource",
+		"paint": { 
+			"hillshade-method": "combined",
+			"hillshade-shadow-color": "#473B24",
+			"hillshade-exaggeration": 0.15	// Интенсивность 
+		}
+	},
+],
+"terrain": {	// других параметров там нет
+	"source": "terrainSource",
+	"exaggeration": 1	// пропорция высоты к ширине 1 - реальная?
+},
+"sky": {
+	"fog-ground-blend": 0.9,	// затуманивание дали. 0 - вдали всё в дымке, 1 - вдали и вблизи одинаково.
+}
+};
+</script>
+
+<script>"use strict"
+// Для того, чтобы загрузить скрипт синхронно, нужно выполнить это
+// _обязательно_ отдельной конструкцией <script>
+if(defaultOptions.buildingsSource){
+	document.write(`<script src="${defaultOptions.buildingsSource}"><\/script>`);
+};
+</script>
+<script>"use strict"
+// Для того, чтобы загрузить скрипт синхронно, нужно выполнить это
+// _обязательно_ отдельной конструкцией <script>
+if(defaultOptions.toponymosSource){
+	document.write(`<script src="${defaultOptions.toponymosSource}"><\/script>`);
+};
+</script>
+
+<script>"use strict" 
+/* Основные деяния */
+//console.log('options:',options);
+// Получим стили для зданий и топонимаов
+//console.log('buildingsStyle:',buildingsStyle);
+if(typeof buildingsStyle !== 'undefined'){	// стиль есть: указан и загружен
+	//mainStyle = mergeV8styles(buildingsStyle,mainStyle)	// дико выглядит, что это ошибка, потому что const mainStyle
+	mergeV8styles(buildingsStyle,mainStyle)	// а это работает и делает то же самое
+	//console.log('mainStyle:',mainStyle);
+};
+//console.log('toponymosStyle:',toponymosStyle);
+if(typeof toponymosStyle !== 'undefined'){	// стиль есть: указан и загружен
+	mergeV8styles(toponymosStyle,mainStyle)
+	//console.log('mainStyle:',mainStyle);
+};
+
+// Создадим карту
+const map = new maplibregl.Map({
+	container: 'map',
+	//hash: 'map',	// это записывает center в командную строку браузера. Нам оно не надо
+	attributionControl: false,
+	maxPitch: 180,
+	center: point2maplibre(options.fromLatLng),	// это позволит определить высоту в этой точке после готовности карты. Хрен там...
+	zoom: 5,	// а это позволит спозиционировать карту на center
+	//centerClampedToGround: false,	// эта пурга всегда устанавливает высоту центра карты на 0
+	style: mainStyle
+});
+
+map.on('load', () => {
+	map.getCanvas().focus();
+	map.getCanvas().addEventListener(	// управление с клавиатуры
+		'keydown',
+		(event) => {
+			//console.log('Нажата клавиша',event.which,event);
+			switch(event.key){
+			case 'ArrowLeft':
+				event.preventDefault();
+				panoLEFT();
+				break;
+			case 'ArrowUp':
+				event.preventDefault();
+				stepUP();
+				break;
+			case 'ArrowRight':
+				event.preventDefault();
+				panoRIGHT();
+				break;
+			case 'ArrowDown':
+				event.preventDefault();
+				stepBACK();
+				break;
+			case '+':
+				event.preventDefault();
+				viewpointUP();
+				break;
+			case '-':
+				event.preventDefault();
+				viewpointDOWN();
+				break;
+			};
+		}
+	);
+	
+	map.on('movestart', (event) => {
+		//console.log('Изменение карты началось',map.isSourceLoaded("terrainSource"));
+		readyIndicator.style.color = 'red';
+	});
+	map.on('moveend', (event) => {
+		//console.log('Изменение карты завершилось',map.isSourceLoaded("terrainSource"));
+		readyIndicator.style.color = 'green';
+		viewAngleMark.style.transform = `rotate(${cameraOptions.bearing}deg)`;	// повернём значёк на панели
+	});
+	
+	if(overlayPanel.hidden == false) {
+		map.on('click', (event) => {
+			//console.log('map.on click',event);
+			if(currentInputField && event.lngLat) {
+				//console.log('map.on click',event.lngLat);
+				currentInputField.value = `${event.lngLat.lat} ${event.lngLat.lng}`;
+				currentInputField = undefined;
+			};
+		});
+	};
+
+	//map.on('rotateend', (event) => {
+		//console.log('map.on rotateend',event);
+	//	viewAngleMark.style.transform = `rotate(${cameraOptions.bearing}deg)`;	// повернём значёк на панели
+	//});
+	
+	readyIndicator.style.color = 'green';
+	//alert();
+});
+
+// Запустим прослушивание источника управления
+var subscribe = '?WATCH={"enable":true,"json":true,"subscribe":"TPV"};';
+const uri = `ws://${defaultOptions.gpsdProxyHost}:${defaultOptions.gpsdProxyPort}`;
+if(defaultOptions.gpsdProxyHost && defaultOptions.gpsdProxyPort){
+	doWebsocket(uri) //	запускаем прослушивание сокета и обработку полученного
+	backControlPad.hidden = false;
+	//console.log("followSwitch.checked",followSwitch.checked);
+	if(followSwitch.checked) bearingMark.hidden = false;
+	else bearingMark.hidden = true;
+	followSwitch.checked = storageHandler.restore('followSwitch');
+}
+else {
+	backControlPad.hidden = true;
+	bearingMark.hidden = true;
+};
+
+updPointInput();	// запишем точки обзора в пользовательский интерфейс
+if(overlayPanel.hidden == false) {
+	viewAngleMark.style.transform = `rotate(${cameraOptions.bearing}deg)`;	// повернём значёк на панели
+};
+
+
+// Здесь ещё рельеф не готов, и высоту определить невозможно. Но, поскольку первое определение высоты
+// всё равно неправильное, лучше получается с 0 высоты, чем с неправильной высотой.
+// Особенно это заметно на уровне моря.
+//console.log('[] getCameraTargetElevation=',map.getCameraTargetElevation(),'queryTerrainElevation=',map.queryTerrainElevation(point2maplibre(options.fromLatLng)));
+cameraOptions = {...cameraOptions, ...map.calculateCameraOptionsFROMcustom(cameraOptions.cameraCenter,cameraOptions.bearing,options.cameraHeight,fakeDistance)};
+//console.log('fromLatLng:',options.fromLatLng,'cameraOptions:',JSON.stringify(cameraOptions,null,"\t"));
+map.jumpTo(cameraOptions);	// Покажем панораму
+
+
+
+
+// Дальше определение функций
+function doWebsocket(uri){
+socket = new WebSocket(uri);
+socket.onopen = websocketOnOpen;
+socket.onmessage = websocketOnMessage;
+socket.onclose = websocketOnClose;
+socket.onerror = websocketOnError;
+//console.log('[doWebsocket] try to open socket',socket);
+} // end function doWebsocket
+
+
+function websocketOnOpen(event) {
+/**/
+// формируем подписку
+//event.target.send(subscribe);	// подписываемся
+event.target.send("\n\n");	// gpsdPROXY не отзовётся, если ему что-нибудь не прислать.
+console.log("Winsocket open: Connection establish with "+uri);
+}; // end function websocketOnOpen
+
+
+function websocketOnMessage(event) {
+//console.log(event);
+// Получаем исходные данные
+let indata;
+try {
+	indata = JSON.parse(event.data);	// но просто строка -- это корректный json, и никаких ошибок не будет, если сервер вернул не json
+	if(!indata) throw Error('inbound empty');
+	if(typeof indata !== 'object')  throw Error('inbound not a object: '+indata);
+}
+catch(error) {
+	console.log('Parsing inbound data error: ',error.message);
+	return;
+}
+//console.log(`[websocketOnMessage] Данные получены с сервера: `,JSON.stringify(indata,null,"\t"));
+// Устанавливаем соединение по протоколу gpsd
+switch(indata.class){
+case 'VERSION':
+	console.log('websocketOnMessage: Handshaiking with gpsd begin: VERSION recieved. Sending WATCH');
+	event.target.send(subscribe);	// подписываемся
+	return;
+	break;
+case 'DEVICES':
+	console.log('websocketOnMessage: Handshaiking with gpsd proceed: DEVICES recieved');
+	return;
+	break;
+case 'WATCH':
+	console.log('websocketOnMessage: Handshaiking with gpsd complit: WATCH recieved.');
+	gpsdPROXYbackend = true;	// типа, gpsd2websocket не шлёт watch
+	return;
+	break;
+};
+doProcess(indata);	// собственно, содержательная деятельность
+}; // end function websocketOnMessage
+
+
+function websocketOnClose(event) {
+/**/
+//console.log('[websocketOnClose] event:',event);
+if (event.wasClean) {
+	console.log(`Websocket closed cleary with code ${event.code} by reason: ${event.reason}`);
+} 
+else {	// сервер убил процесс или сеть недоступна. Обычно в этом случае event.code 1006
+	console.log(`Websocket closed: connection broken with code ${event.code} by reason ${event.reason}`);
+	let emuri;
+	//console.log('[websocketOnClose] event.target.url=',event.target.url,'uri=',uri);
+	if(event.target.url.replace(/^\/+|\/+$/g, '') == uri.replace(/^\/+|\/+$/g, '')) {	// в этом дурацком языке trim без параметров
+		if(window.location.hostname) emuri = `ws://${window.location.hostname}:${options.gpsdProxyPort}`;
+		else emuri = `ws://localhost:${options.gpsdProxyPort}`;
+	}
+	else emuri = uri;
+	window.setTimeout(doWebsocket, 5000, emuri); 	// перезапустим сокет через 5 секунд
+};
+if(optionsUpdateProcess) clearInterval(optionsUpdateProcess);	// остановим периодическое сохранение options
+optionsUpdateProcess = null;
+}; // end function websocketOnClose
+
+
+function websocketOnError(error) {
+/**/
+//console.log('[websocketOnError] error:',error);
+console.log(`Websocket error: ${error.message}`);
+}; // end function websocketOnError
+
+
+function doProcess(indata){
+//console.log(`[doProcess] Данные получены с сервера: `,JSON.stringify(indata,null,"\t"));
+switch(indata.class){
+case 'TPV':
+	if((indata.lat == undefined) || (indata.lon == undefined)) {
+		spatialInfoPresent = false;
+		bearingMark.hidden = true;	// Выключим кораблик в компасе
+		if(!followSwitch.checked) followSwitch.disabled = true;
+		if(optionsUpdateProcess) clearInterval(optionsUpdateProcess);	// остановим периодическое сохранение options
+		optionsUpdateProcess = null;
+		break;
+	};
+	if(followSwitch.disabled) followSwitch.disabled = false;
+	if(!followSwitch.checked) break;	// если не указано следовать координатам - всё.
+	const bearing = indata.track + cameraOptions.userDirection;
+	cameraOptions.cameraCenter = {"lng":indata.lon,"lat":indata.lat};
+	//console.log('bearing=',bearing,'cameraOptions:',JSON.stringify(cameraOptions,null,"\t"));
+	cameraOptions = {...cameraOptions, ...map.calculateCameraOptionsFROMcustom(cameraOptions.cameraCenter,bearing,options.cameraHeight,fakeDistance)};
+	if(cameraOptions.userPitch !== undefined) cameraOptions.pitch = cameraOptions.userPitch;
+	//console.log('[doProcess] cameraOptions:',JSON.stringify(cameraOptions,null,"\t"));
+
+	//map.jumpTo(cameraOptions);
+	map.panTo(cameraOptions.cameraCenter,cameraOptions)
+
+	if(!optionsUpdateProcess) {	// если ещё не, запустим периодическое сохранение точки и направления просмотра
+		optionsUpdateProcess = window.setInterval(opionsFromCameraOptions,5000);
+	};
+	viewAngleMark.style.transform = `rotate(${cameraOptions.bearing}deg)`;	// оно по событию тоже повернётся, но когда ещё то событие произойдёт...
+	bearingMark.style.transform = `rotate(${indata.track}deg)`;	// повернём значёк на панели
+	spatialInfoPresent = true;
+	if(bearingMark.hidden == true) bearingMark.hidden = false;	// включим кораблик в компасе. if - для экономии.
+	break;
+default:
+	return;	// чисто на всякий случай
+};
+}; // end function doProcess
+</script>
+</body>
+</html>
+

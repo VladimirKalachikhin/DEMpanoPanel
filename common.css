@@ -1,0 +1,279 @@
+html {
+	--font-size: calc(0.9em); /* Размер шрифта устанавливается браузером не пропорционально размеру viewport */
+	--big-font-size: calc(1.5 * var(--font-size));
+	--small-font-size: calc(1.1 * var(--font-size));
+	--ltl-font-size: calc(0.95 * var(--font-size));
+}
+body {
+	margin: 0;
+	padding: 0;
+}
+
+#container {
+  	width: 100vw;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	overflow: hidden;	/* кретинский Chrome непонятно как устанавливает ширину */
+	position: relative;
+	margin: 0;
+	padding: 0;
+}
+#map {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	/*border: solid red;*/
+}
+#overlayPanel {
+	position: relative;
+	display: flex;	/* Непонятно, почему так, но без - вложенные блоки выстраиваются в колонку, а не в строку */
+	justify-content: center;
+	align-items: center;     /* Centers content vertically */
+	width: 98%;
+	height: 31vmin;
+	max-height: 23em;
+	background: rgba(255, 255, 255, 1);
+	position: absolute;
+	overflow: auto;
+	bottom: 0;
+	margin: 2px;
+	padding: 0.5em 0.5em;
+	border-radius: 0.5em;
+	font-size: var(--font-size);
+	background-color: rgb(115, 133, 149);
+	/*border: solid blue;*/
+}
+#controlPad {
+	width: 35%;
+	max-width: 35em;
+	min-width:15%;
+	height: calc(100% - 2px);
+	margin: 0 1em;
+	padding: 0;
+	background-color: rgb(218, 227, 235);
+	border:solid black 1px;
+	border-radius: 0.5em;
+}
+#controlPad img {
+	margin: 0;
+	height: 2em;
+	/*border: solid red;*/
+}
+.okButton {
+	width:2em;
+	padding:0.2em;
+	margin:0 0.5em;
+}
+#directionRose {
+	position: relative;	/* для создания stacking context */
+	display: flex;
+	justify-content: center; /* Centers content horizontally */
+	align-items: center;     /* Centers content vertically */
+	container-type: size;
+	height: calc(100% - 2px);
+	width: auto;
+	aspect-ratio: 1 / 1;
+	margin: 0;
+	padding: 0;
+	background-color: rgb(218, 227, 235);
+	border:solid black 1px;
+	border-radius: 0.5em;
+	--cardSize: calc(100cqh - calc(1em));	/* cqh - 1% высоты родительского контейнера. cqw - ширины, cqmin cqmax */
+}
+/* стили картушки компаса */
+#compassCard {
+	display: flex;
+	justify-content: center; /* Centers content horizontally */
+	align-items: center;     /* Centers content vertically */
+	position: relative;	/* для создания stacking context */
+	height: var(--cardSize);
+	width: auto;
+	aspect-ratio: 1 / 1;
+	margin: 0;
+	padding: 0;
+	border: solid black;
+	border-radius: 50%;
+	font-family: MonoSpace;
+	background-color: white;
+}
+.compas-face-scale {
+	position: static !important;
+	height: fit-content !important;
+	width: auto !important;
+	font-size: 0.8em;
+	margin: 0 auto;
+	
+	/*border: solid red;*/
+}
+#compass-face div {
+	/*border: solid red;*/
+	position: absolute;
+	margin: 0;
+	padding: 0;
+	height: calc((var(--cardSize) / 2) - 0.2em); /*пусть она будет чуть поменьшеЮ чтобы края цифр влезли */
+	width: calc(var(--cardSize) / 10);	
+	top: 0;	/*поскольку высота равна радиусу, низ "спицы" будет в центре окружности .compass*/
+	left: calc((var(--cardSize) / 2) - (var(--cardSize) / 20));	/*ширина - 1/2 ширины строки*/
+	text-align: center;
+	transform-origin: bottom center;	/* относительно чего вращать */
+}
+
+.charN { 
+	/*border: solid green;*/
+	font-size: var(--big-font-size);
+}
+.charNNE { 
+	/*border: solid blue;*/
+	font-size: var(--ltl-font-size);
+	transform: rotate(22.5deg); 
+}
+.charNE { 
+	font-size: var(--small-font-size);
+	transform: rotate(45deg); 
+}
+.charENE { 
+	font-size: var(--ltl-font-size);
+	transform: rotate(67.5deg); 
+}
+.charE { 
+	font-size: var(--big-font-size);
+	transform: rotate(90deg); 
+}
+.charESE { 
+	font-size: var(--ltl-font-size);
+	transform: rotate(112.5deg); 
+}
+.charSE { 
+	font-size: var(--small-font-size);
+	transform: rotate(135deg); 
+}
+.charSSE { 
+	font-size: var(--ltl-font-size);
+	transform: rotate(157.5deg); 
+}
+.charS { 
+	/*border: solid blue;*/
+	font-size: var(--big-font-size);
+	transform: rotate(180deg); 
+}
+.charSSW { 
+	font-size: var(--ltl-font-size);
+	transform: rotate(202.5deg); 
+}
+.charSW { 
+	font-size: var(--small-font-size);
+	transform: rotate(225deg); 
+}
+.charWSW { 
+	font-size: var(--ltl-font-size);
+	transform: rotate(247.5deg); 
+}
+.charW { 
+	font-size: var(--big-font-size);
+	transform: rotate(270deg); 
+}
+.charWNW { 
+	font-size: var(--ltl-font-size);
+	transform: rotate(292.5deg); 
+}
+.charNW { 
+	font-size: var(--small-font-size);
+	transform: rotate(315deg); 
+}
+.charNNW { 
+	/*border: solid blue;*/
+	font-size: var(--ltl-font-size);
+	transform: rotate(337.5deg); 
+}
+#viewAngleMark {
+	/*border: solid red 1px;*/
+	position: absolute;
+	height: calc((var(--cardSize) / 2) - 4px);
+	width: calc(var(--cardSize) / 3);
+	top: 0;
+	left: calc((var(--cardSize) / 2) - (var(--cardSize) / 6));
+	transform-origin: bottom center;	/* относительно чего вращать */
+	margin: 0;
+}
+#viewAngleMark img {
+	/*border: solid green 1px;*/
+	position: absolute;
+	width: calc(var(--cardSize) / 3);
+	bottom: 0;	
+}
+#backControlPad {
+	container-type: size;
+	height: calc(100% - 2px);
+	width: 33%;
+	max-width: 35em;
+	min-width: 15%;
+	margin: 0 1em;
+	padding: 0;
+	background-color: rgb(218, 227, 235);
+	border:solid black 1px;
+	border-radius: 0.5em;
+}
+#bearingMark {
+	/*border: solid red 1px;*/
+	height: calc((var(--cardSize) / 4) );
+	width: auto;
+	aspect-ratio: 1 / 1;
+	transform-origin: center;	/* относительно чего вращать */
+	margin: 0 0 0.5em 0;
+}
+
+
+
+
+/* Переключатель https://proto.io/freebies/onoff/ */
+.onoffswitch {
+	position: relative; width: 60px;
+	-webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+}
+.onoffswitch-checkbox {
+	display: none;
+}
+.onoffswitch-label {
+	display: block; overflow: hidden; cursor: pointer;
+	border: 2px solid #999999; border-radius: 20px;
+}
+.onoffswitch-inner {
+	display: block; width: 200%; margin-left: -100%;
+	transition: margin 0.3s ease-in 0s;
+}
+.onoffswitch-inner:before, .onoffswitch-inner:after {
+	display: block; float: left; width: 50%; height: 16px; padding: 0; line-height: 16px;
+	font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+	box-sizing: border-box;
+}
+.onoffswitch-inner:before {
+	content: "ON";
+	padding-left: 10px;
+	background-color: #34A7C1; color: #FFFFFF;
+}
+.onoffswitch-inner:after {
+	content: "OFF";
+	padding-right: 10px;
+	background-color: #EEEEEE; color: #999999;
+	text-align: right;
+}
+.onoffswitch-switch {
+	display: block; width: 13px; margin: 1.5px;
+	background: #FFFFFF;
+	position: absolute; top: 0; bottom: 0;
+	right: 40px;
+	border: 2px solid #999999; border-radius: 20px;
+	transition: all 0.3s ease-in 0s; 
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+	margin-left: 0;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+	right: 0px; 
+} 
+
