@@ -23,7 +23,7 @@ var defaultOptions = {
 	// The map is on top of the terrain. It must be raster.
 	//"DEMtexture" : "http://stagerserver.local/tileproxy/tiles.php?z={z}&x={x}&y={y}&r=osmmapMapnik",
 	//"DEMtexture" : "http://stagerserver.local/tileproxy/tiles.php?z={z}&x={x}&y={y}&r=eniroTopo",
-	"DEMtexture" : "http://mt0.google.com/vt/lyrs=s@176103410&s=Galileo&scale=1&hl=en&x={x}&y={y}&z={z}",
+	"DEMtexture" : "https://mt0.google.com/vt/lyrs=s@176103410&s=Galileo&scale=1&hl=en&x={x}&y={y}&z={z}",
 	//"DEMtexture" : "http://stagerserver.local/tileproxy/tiles.php?z={z}&x={x}&y={y}&r=GoogleSAT",
 	//"DEMtexture" : "http://stagerserver.local/tileproxy/tiles.php?z={z}&x={x}&y={y}&r=ESRI_Sat",
 	
