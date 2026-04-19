@@ -8,34 +8,34 @@ var defaultOptions = {
 	// Backend host & port. If not then it is the host name. If it is not, then it is a [::1]:
 	//"gpsdProxyHost" : "127.0.0.1",
 	//"gpsdProxyHost" : "192.168.10.10",
-	"gpsdProxyHost" : "stagerserver.local",
-	"gpsdProxyPort" : "3838",	// gpsdPROXY
+	//"gpsdProxyHost" : "stagerserver.local",
+	//"gpsdProxyPort" : "3838",	// gpsdPROXY
 	//"gpsdProxyHost" : "[::1]",
 	//"gpsdProxyPort" : "3839",	// gpsdPROXY or gpsd2websocket
 	
 	// Источник высот должен быть файлом стиля в нотации mbtiles v.8
 	// и указываться ПОЛНЫМ url (ну, таков каприз людей из mapbox).
 	// DEM source must be a STYLE mbtiles v.8 file and be determined a FULL url.
-	"DEMsource" : "http://stagerserver.local/tileproxy/mapsources/mapterhorn/tilejson.json",
-	//"DEMsource" : "https://tiles.mapterhorn.com/tilejson.json",
+	//"DEMsource" : "http://stagerserver.local/tileproxy/mapsources/mapterhorn/tilejson.json",
+	"DEMsource" : "https://tiles.mapterhorn.com/tilejson.json",
 	
 	// Карта поверх рельефа. Должна быть растровой.
 	// The map is on top of the terrain. It must be raster.
 	//"DEMtexture" : "http://stagerserver.local/tileproxy/tiles.php?z={z}&x={x}&y={y}&r=osmmapMapnik",
 	//"DEMtexture" : "http://stagerserver.local/tileproxy/tiles.php?z={z}&x={x}&y={y}&r=eniroTopo",
-	//"DEMtexture" : "http://mt0.google.com/vt/lyrs=s@176103410&s=Galileo&scale=1&hl=en&x={x}&y={y}&z={z}",
+	"DEMtexture" : "http://mt0.google.com/vt/lyrs=s@176103410&s=Galileo&scale=1&hl=en&x={x}&y={y}&z={z}",
 	//"DEMtexture" : "http://stagerserver.local/tileproxy/tiles.php?z={z}&x={x}&y={y}&r=GoogleSAT",
-	"DEMtexture" : "http://stagerserver.local/tileproxy/tiles.php?z={z}&x={x}&y={y}&r=ESRI_Sat",
+	//"DEMtexture" : "http://stagerserver.local/tileproxy/tiles.php?z={z}&x={x}&y={y}&r=ESRI_Sat",
 	
 	// Источник изображений зданий. 
 	// Должен быть файлом стиля в нотации mbtiles v.8, обёрнутым в переменную javascript. CORS - зло.
-	"buildingsSource" : "3d-buildings.js",
-	//"buildingsSource" : "3d-buildings_online.js",
+	//"buildingsSource" : "3d-buildings.js",
+	"buildingsSource" : "3d-buildings_online.js",
 	
 	// Источник подписей к карте. 
 	// Должен быть файлом стиля в нотации mbtiles v.8, обёрнутым в переменную javascript. CORS - зло.
-	"toponymosSource" : "toponymos.js",
-	//"toponymosSource" : "toponymos_online.js",
+	//"toponymosSource" : "toponymos.js",
+	"toponymosSource" : "toponymos_online.js",
 	
 	// Высота точки зрения над поверхностью, метры.
 	// Height of the viewpoint above the surface, meters
