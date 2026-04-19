@@ -110,7 +110,8 @@ let cameraOptions = this.calculateCameraOptionsFromTo(
 // падает в Firefox, если pitch > 90. В Opera и Chrome - не падает.
 //if(!cameraOptions.pitch || (cameraOptions.pitch>90)) cameraOptions.pitch = 90;
 // Вычислим наклон камеры исходя из высоты камеры и дистанции до center
-const pitch = (Math.atan(fakeDistance/cameraHeight)/Math.PI)*180;
+let pitch = (Math.atan(fakeDistance/cameraHeight)/Math.PI)*180;
+if(pitch > 89.7) pitch = 89.7;	// Это какая-то сакральная цифра. Если больше - домики не рисуются.
 //const pitch = 87.03;
 //console.log('[calculateCameraOptionsFROMcustom] pitch=',pitch);
 cameraOptions.pitch = pitch;
