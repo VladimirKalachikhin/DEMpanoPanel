@@ -62,9 +62,10 @@ try {	// хотя, вроде бы, try не образует контекста
 	else elevation = 0;
 }
 catch (error){
+	console.log('[calculateCameraOptionsFROMcustom] ошибка в queryTerrainElevation:',error);
 	elevation = 0
 };
-//console.log('[calculateCameraOptionsFROMcustom] elevation=',elevation,'isTerrain=',isTerrain,'fakeDistance=',fakeDistance);
+console.log('[calculateCameraOptionsFROMcustom] elevation=',elevation,'isTerrain=',isTerrain,'fakeDistance=',fakeDistance);
 if((fakeDistance === null) || (fakeDistance === undefined)){
 	if(isTerrain){
 // Суть этого цирка в том, что jumpTo ничего не знает о точке зрения, и строит сцену так, что
@@ -77,7 +78,7 @@ if((fakeDistance === null) || (fakeDistance === undefined)){
 			const ele = this.queryTerrainElevation(targetLngLat);
 			//const delta = (deltaElevation*dist)/100;	// так себе результат
 			const delta = deltaElevation;
-			//console.log('[calculateCameraOptionsFROMcustom] Высота в точке fakeDistance=',dist,ele,'допустимая разница высот',delta);
+			console.log('[calculateCameraOptionsFROMcustom] Высота в точке fakeDistance=',dist,ele,'допустимая разница высот',delta);
 			if((ele-elevation) < delta) {	// т.е., точка не выше, а что ниже - пофиг.
 				fakeDistance = dist;
 				break;
@@ -95,7 +96,7 @@ else {
 	targetLngLat = destinationPoint(fromLatLng,bearing,fakeDistance);
 	targetLngLat = [targetLngLat.lng,targetLngLat.lat];
 };
-//console.log('[calculateCameraOptionsFROMcustom] targetLngLat:',targetLngLat,'fakeDistance',fakeDistance,'getVerticalFieldOfView',map.getVerticalFieldOfView());
+console.log('[calculateCameraOptionsFROMcustom] targetLngLat:',targetLngLat,'fakeDistance',fakeDistance,'getVerticalFieldOfView',map.getVerticalFieldOfView());
 
 elevation += cameraHeight;
 let cameraOptions = this.calculateCameraOptionsFromTo(
@@ -113,8 +114,10 @@ let cameraOptions = this.calculateCameraOptionsFromTo(
 let pitch = (Math.atan(fakeDistance/cameraHeight)/Math.PI)*180;
 if(pitch > 89.7) pitch = 89.7;	// Это какая-то сакральная цифра. Если больше - домики не рисуются.
 //const pitch = 87.03;
-//console.log('[calculateCameraOptionsFROMcustom] pitch=',pitch);
+console.log('[calculateCameraOptionsFROMcustom] pitch=',pitch);
 cameraOptions.pitch = pitch;
+if(cameraOptions.pitch > 89.7) cameraOptions.pitch = 89.7;	// Это какая-то сакральная цифра. Если больше - домики не рисуются.
+console.log('[calculateCameraOptionsFROMcustom] cameraOptions.pitch=',cameraOptions.pitch);
 cameraOptions.elevation = elevation;
 //cameraOptions.zoom *= 1.1;
 return cameraOptions;

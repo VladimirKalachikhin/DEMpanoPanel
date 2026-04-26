@@ -124,6 +124,7 @@ var version = ' v.0.0.0';
 document.title += version;
 var options = storageHandler.restore('options');
 if(!options) options = {};
+if(!options.cameraHeight) options.cameraHeight = defaultOptions.defaultCameraHeight;
 if(!options.fromLatLng) options.fromLatLng = defaultOptions.defaultViewPoint;
 if(!options.fromLatLng) options.fromLatLng = [44.7837, 37.3775];	// Lat Lng, {"lat": ,"lng": }, etc.
 if(!options.toLatLng && !options.bearing) options.toLatLng = defaultOptions.defaultTargetPoint;
@@ -131,7 +132,7 @@ if(!options.toLatLng && !options.bearing) options.toLatLng = [44.7927, 37.404];	
 if(!options.bearing) options.bearing = bearingFromTo(options.fromLatLng,options.toLatLng);
 if(!options.bearing) options.bearing = bearingFromTo(options.fromLatLng,options.toLatLng);
 if(!options.kioskMode) options.kioskMode = defaultOptions.kioskMode;
-//console.log('options:',options);
+console.log('options:',options);
 
 // Расстояние между камерой и center карты. null - пытаемся определить по рельефу.
 // Если константа - то при попадании center на рельеф выше точки камеры - изображение будет
@@ -311,9 +312,16 @@ map.on('load', () => {
 		//console.log('map.on rotateend',event);
 	//	viewAngleMark.style.transform = `rotate(${cameraOptions.bearing}deg)`;	// повернём значёк на панели
 	//});
+	map.on('terrain', (event) => {
+		console.log('map.on terrain',event);
+	});
 	
-	readyIndicator.style.color = 'green';
 	//alert();
+	//cameraOptions = {...cameraOptions, ...map.calculateCameraOptionsFROMcustom(cameraOptions.cameraCenter,cameraOptions.bearing,options.cameraHeight,fakeDistance)};
+	//console.log('fromLatLng:',options.fromLatLng,'cameraOptions:',JSON.stringify(cameraOptions,null,"\t"));
+	//map.jumpTo(cameraOptions);	// Покажем панораму
+
+	readyIndicator.style.color = 'green';
 });
 
 // Запустим прослушивание источника управления
@@ -337,6 +345,17 @@ if(overlayPanel.hidden == false) {
 	viewAngleMark.style.transform = `rotate(${cameraOptions.bearing}deg)`;	// повернём значёк на панели
 };
 
+/*
+const axialBuoy = document.createElement('div');
+axialBuoy.innerHTML = '<img src="img/axialBuoy.svg">';
+axialBuoy.style.width = '1.5em';	// нужно указывать именно ширину, ибо она определяет размер div
+const marker = new maplibregl.Marker({
+	"element":axialBuoy,
+	"anchor":"bottom",
+	//"alignment":"map"	// не документировано, никакого эффекта не замечено
+}).setLngLat([37.3768,44.7589]).addTo(map);
+//}).setLngLat([37.3763,44.7591]).addTo(map);
+*/
 
 // Здесь ещё рельеф не готов, и высоту определить невозможно. Но, поскольку первое определение высоты
 // всё равно неправильное, лучше получается с 0 высоты, чем с неправильной высотой.
