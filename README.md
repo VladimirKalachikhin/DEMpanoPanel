@@ -5,13 +5,13 @@ A web application that shows panoramic (i.e., perspective from ground level) vie
 
 In its basic configuration, it can be useful for travelers and tourists who want to get a preliminary impression of the terrain that awaits them.  It's also good for sailors and people who like to sail to plan their trips and see where they are on the sea.
 ![Terrain sample](screenshots/s1_en.jpeg)  
-This code is written without using AI, "best practices", OOP, and an IDE.
+This code is written without using cybernetic agents, "best practices", OOP, and an IDE.
 
 ## v. 0.1
 
 ## Features
 * Configurable data sources, both local and online.
-* You don't need a web server; just open the `index.html` file in your browser.
+* You don't need a web server, just open the `index.html` file in your browser.
 * Suitable for mobile devices.
 * Buildings, geographical names and navigation signs can be displayed.
 * You can specify the view point by entering coordinates or using the mouse (or touch) on the screen.
