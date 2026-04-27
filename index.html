@@ -117,9 +117,10 @@ internalisationApply();	// заменим (некоторые) подписи н
 /* Параметры и переменные
 Последовательно расположенные скрипты будут выполнятся последовательно
 */
-var version = ' v.0.0.0';
+var version = ' v.0.1.0';
 /*
-0.0.0	base features
+0.1	with navigation signs
+0.0	base features
 */
 document.title += version;
 var options = storageHandler.restore('options');
@@ -132,7 +133,7 @@ if(!options.toLatLng && !options.bearing) options.toLatLng = [44.7927, 37.404];	
 if(!options.bearing) options.bearing = bearingFromTo(options.fromLatLng,options.toLatLng);
 if(!options.bearing) options.bearing = bearingFromTo(options.fromLatLng,options.toLatLng);
 if(!options.kioskMode) options.kioskMode = defaultOptions.kioskMode;
-console.log('options:',options);
+//console.log('options:',options);
 
 // Расстояние между камерой и center карты. null - пытаемся определить по рельефу.
 // Если константа - то при попадании center на рельеф выше точки камеры - изображение будет
@@ -223,6 +224,13 @@ if(defaultOptions.toponymosSource){
 	document.write(`<script src="${defaultOptions.toponymosSource}"><\/script>`);
 };
 </script>
+<script>"use strict"
+// Для того, чтобы загрузить скрипт синхронно, нужно выполнить это
+// _обязательно_ отдельной конструкцией <script>
+if(defaultOptions.navigationSignsSource){
+	document.write(`<script src="${defaultOptions.navigationSignsSource}"><\/script>`);
+};
+</script>
 
 <script>"use strict" 
 /* Основные деяния */
@@ -237,6 +245,11 @@ if(typeof buildingsStyle !== 'undefined'){	// стиль есть: указан 
 //console.log('toponymosStyle:',toponymosStyle);
 if(typeof toponymosStyle !== 'undefined'){	// стиль есть: указан и загружен
 	mergeV8styles(toponymosStyle,mainStyle)
+	//console.log('mainStyle:',mainStyle);
+};
+//console.log('navSignsStyle:',navSignsStyle);
+if(typeof navSignsStyle !== 'undefined'){	// стиль есть: указан и загружен
+	mergeV8styles(navSignsStyle,mainStyle)
 	//console.log('mainStyle:',mainStyle);
 };
 

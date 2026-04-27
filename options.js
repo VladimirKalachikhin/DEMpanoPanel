@@ -13,9 +13,10 @@ var defaultOptions = {
 	//"gpsdProxyHost" : "[::1]",
 	//"gpsdProxyPort" : "3839",	// gpsdPROXY or gpsd2websocket
 	
-	// Источник высот должен быть файлом стиля в нотации mbtiles v.8
-	// и указываться ПОЛНЫМ url (ну, таков каприз людей из mapbox).
-	// DEM source must be a STYLE mbtiles v.8 file and be determined a FULL url.
+	// Источник высот
+	// Должен быть файлом описания тайлов в нотации mbtiles v.2 и указываться ПОЛНЫМ url (ну, таков каприз людей из mapbox).
+	// DEM source 
+	// Must be a tile source description mbtiles v.2 file and be determined a FULL url.
 	//"DEMsource" : "http://stagerserver.local/tileproxy/mapsources/mapterhorn/tilejson.json",
 	"DEMsource" : "https://tiles.mapterhorn.com/tilejson.json",
 	
@@ -27,16 +28,37 @@ var defaultOptions = {
 	//"DEMtexture" : "http://stagerserver.local/tileproxy/tiles.php?z={z}&x={x}&y={y}&r=GoogleSAT",
 	//"DEMtexture" : "http://stagerserver.local/tileproxy/tiles.php?z={z}&x={x}&y={y}&r=ESRI_Sat",
 	
-	// Источник изображений зданий. 
+	// Следующие данные описываются стилями в нотации mbtiles v.8. Эти стили объединяются
+	// с встроенным стилем в указанной последовательности. Соответственно, если в стилях
+	// имеются одноимённый объекты - последний заменит предыдущий.
+	// В частности, sprite и glyphs будут от последнего стиля, в котором они указаны.
+	// Разумеется, все эти данные могут быть указаны в одном файле стиля.
+	// The following data is described by styles in mbtiles v.8 notation. These styles are combined
+	// with the embedded style in the specified sequence. Therefore, if the styles
+	// have objects of the same name, the latter will replace the previous one.	
+	// Of course, all this data can be specified in a single style file.
+	//
+	// Источник изображений зданий.
 	// Должен быть файлом стиля в нотации mbtiles v.8, обёрнутым в переменную javascript. CORS - зло.
+	// The source of the buildings view.
+	// It should be a style file in mbtiles v.8 notation wrapped in a javascript variable. CORS is evil.
 	//"buildingsSource" : "3d-buildings.js",
 	"buildingsSource" : "3d-buildings_online.js",
 	
 	// Источник подписей к карте. 
 	// Должен быть файлом стиля в нотации mbtiles v.8, обёрнутым в переменную javascript. CORS - зло.
+	// The source of the captions to the map.
+	// It should be a style file in mbtiles v.8 notation wrapped in a javascript variable. CORS is evil.
 	//"toponymosSource" : "toponymos.js",
 	"toponymosSource" : "toponymos_online.js",
-	
+
+	// Источник навигационных знаков.
+	// Должен быть файлом стиля в нотации mbtiles v.8, обёрнутым в переменную javascript. CORS - зло.
+	// Source of navigation signs.
+	// It should be a style file in mbtiles v.8 notation wrapped in a javascript variable. CORS is evil.
+	//"navigationSignsSource" : "skippoNavSigns.js",
+	"navigationSignsSource" : "skippoNavSigns_online.js",
+
 	// Высота точки зрения над поверхностью, метры.
 	// Height of the viewpoint above the surface, meters
 	"defaultCameraHeight" : 2,
