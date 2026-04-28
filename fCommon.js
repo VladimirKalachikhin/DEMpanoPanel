@@ -42,7 +42,6 @@ maplibregl.Map.prototype.calculateCameraOptionsFROMcustom = function (fromLatLng
 общее неудобство - вполне реальные.
 */
 const fakeDistances = [1000,500,300,100];	// возможные дистанции от камеры до center требуемого вида. Чем больше - тем лучше.
-const defaultFakeDistance = 300;	// дистанция от камеры, если нет возможности искать лучшую
 let deltaElevation = 5;	// разница в высотах в метрах, которые считаются одной высотой
 let isTerrain = false;	// флаг, что рельеф есть и загружен
 
@@ -116,8 +115,6 @@ if(pitch > 89.7) pitch = 89.7;	// Это какая-то сакральная ц
 //const pitch = 87.03;
 //console.log('[calculateCameraOptionsFROMcustom] pitch=',pitch);
 cameraOptions.pitch = pitch;
-if(cameraOptions.pitch > 89.7) cameraOptions.pitch = 89.7;	// Это какая-то сакральная цифра. Если больше - домики не рисуются.
-//console.log('[calculateCameraOptionsFROMcustom] cameraOptions.pitch=',cameraOptions.pitch);
 cameraOptions.elevation = elevation;
 //cameraOptions.zoom *= 1.1;
 return cameraOptions;
@@ -184,7 +181,7 @@ function viewpointDOWN(){
 Global: map, vRotateDelta, cameraOptions
 */
 cameraOptions.pitch += vRotateDelta;
-if(cameraOptions.pitch > 89.7) cameraOptions.pitch = 89.7;
+if(cameraOptions.pitch > 89.7) cameraOptions.pitch = (Math.atan(defaultFakeDistance/(cameraOptions.elevation+options.cameraHeight))/Math.PI)*180 || 89.7;
 cameraOptions.userPitch = cameraOptions.pitch;
 //console.log('DOWN, fromLatLng:',options.fromLatLng,'cameraOptions:',JSON.stringify(cameraOptions,null,"\t"));
 
@@ -195,35 +192,6 @@ updPointInput();	// запишем точки обзора в пользоват
 }; // end function viewportDOWN
 
 
-/*/ Чёта оно непонятно как рисует... И высоту тоже - непонятно.
-function stepUP(){
-// Global: map, distanceDelta
-cameraOptions.cameraCenter = destinationPoint(cameraOptions.cameraCenter,cameraOptions.bearing,distanceDelta);
-let elevation = map.queryTerrainElevation(point2maplibre(cameraOptions.cameraCenter));
-if(elevation !== null) cameraOptions.elevation = elevation + options.cameraHeight;
-console.log('[stepUP] cameraOptions.cameraCenter:',cameraOptions.cameraCenter,'cameraOptions.elevation:',cameraOptions.elevation);
-
-map.panBy([0, -distanceDelta],{"elevation":cameraOptions.elevation});	// оно просто двигает всё вперёд, но почему-то устанавливает elevation в 0
-//console.log('[stepUP] center:',map.getCenter(),'elevation:',map.getCenterElevation(),'zoom:',map.getZoom(),'pitch:',map.getPitch(),'bearing:',map.getBearing(),'getVerticalFieldOfView=',map.getVerticalFieldOfView());
-cameraOptions.center = map.getCenter();
-
-updPointInput();	// запишем точки обзора в пользовательский интерфейс
-}; // end function stepUP
-
-function stepBACK(){
-// Global: map, distanceDelta
-cameraOptions.cameraCenter = destinationPoint(cameraOptions.cameraCenter,(cameraOptions.bearing+180)%360,distanceDelta);
-let elevation = map.queryTerrainElevation(point2maplibre(cameraOptions.cameraCenter));
-if(elevation !== null) cameraOptions.elevation = elevation + options.cameraHeight;
-console.log('[stepBACK] cameraOptions.cameraCenter:',cameraOptions.cameraCenter,'cameraOptions.elevation:',cameraOptions.elevation);
-
-map.panBy([0, distanceDelta],{"elevation":cameraOptions.elevation});
-console.log('[stepBACK] center:',map.getCenter(),'elevation:',map.getCenterElevation(),'zoom:',map.getZoom(),'pitch:',map.getPitch(),'bearing:',map.getBearing(),'getVerticalFieldOfView=',map.getVerticalFieldOfView());
-cameraOptions.center = map.getCenter();
-
-updPointInput();	// запишем точки обзора в пользовательский интерфейс
-}; // end function stepBACK
-/*/
 function stepUP(){
 // Global: map, distanceDelta
 cameraOptions.cameraCenter = destinationPoint(cameraOptions.cameraCenter,cameraOptions.bearing,distanceDelta);
