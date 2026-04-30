@@ -7,7 +7,7 @@ In its basic configuration, it can be useful for travelers and tourists who want
 ![Terrain sample](screenshots/s1_en.jpeg)  
 This code is written without using cybernetic agents, "best practices", OOP, and an IDE.
 
-## v. 0.1
+## v. 0.2
 
 ## Features
 * Configurable data sources, both local and online.
@@ -17,6 +17,7 @@ This code is written without using cybernetic agents, "best practices", OOP, and
 * You can specify the view point by entering coordinates or using the mouse (or touch) on the screen.
 * Change the direction of your view to the right or left, move forward or backward, or change the height of your view. The current direction of your view is displayed on the indicator.
 * Viewpoints can be continuously obtained from a geo-positioning device (for example, a GNSS receiver), which requires [gpsd](https://gpsd.io/) and [gpsd2websocket](https://github.com/VladimirKalachikhin/gpsd2websocket) or [gpsdPROXY](https://github.com/VladimirKalachikhin/gpsdPROXY).
+* When used with [gpsdPROXY](https://github.com/VladimirKalachikhin/gpsdPROXY ) the current waypoint is shown as an axial milestone.
 
 ## Requirements
 A modern browser is required on a high-performance device with sufficient RAM and a wide screen.  
